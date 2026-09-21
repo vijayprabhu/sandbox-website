@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hello world</title>
+</head>
+<body>
+  <p id="greeting">Hello world</p>
+  <p>Country: <span id="country">Unknown</span></p>
+  <p>Current time: <time id="time"></time></p>
+
+  <script>
+    const countryElement = document.querySelector('#country');
+    const timeElement = document.querySelector('#time');
+
+    function getCountry() {
+      const locale = navigator.language || 'en-US';
+      const region = locale.match(/[-_]([A-Z]{2}|\d{3})$/i)?.[1]?.toUpperCase();
+
+      if (!region || !('DisplayNames' in Intl)) {
+        return region || 'Unknown';
+      }
+
+      return new Intl.DisplayNames([locale], { type: 'region' }).of(region) || region;
+    }
+
+    function updateTime() {
+      const now = new Date();
+      timeElement.textContent = now.toLocaleTimeString([], {
+        hour: 'numeric',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+      timeElement.dateTime = now.toISOString();
+    }
+
+    countryElement.textContent = getCountry();
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>
